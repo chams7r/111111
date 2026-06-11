@@ -1,392 +1,45 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>LooksMax Rate</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#08080f;--card:#111119;--card2:#1a1a28;--accent:#7c3aed;--accent2:#a855f7;--green:#22c55e;--red:#ef4444;--gold:#f59e0b;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--r:14px}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:72px}
-.header{background:linear-gradient(135deg,var(--accent),#6d28d9);padding:16px 16px 20px;position:relative}
-.header h1{font-size:20px;font-weight:700}
-.header .sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px}
-.coins-bar{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border-radius:16px;padding:5px 12px;margin-top:8px;font-size:13px;font-weight:600}
-
-.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid rgba(255,255,255,.05);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
-.nav-i{flex:1;text-align:center;padding:8px 0 6px;cursor:pointer;color:var(--text3);transition:.2s}
-.nav-i.active{color:var(--accent2)}
-.nav-i .ic{font-size:20px;display:block}
-.nav-i .lb{font-size:9px;margin-top:1px}
-
-.page{display:none;padding:16px}.page.active{display:block}
-
-.card{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:var(--r);padding:14px;margin-bottom:10px}
-.card-t{font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
-
-.score-card{background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid rgba(124,58,237,.25);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:12px}
-.psl-val{font-size:52px;font-weight:800;line-height:1}.psl-max{font-size:18px;color:var(--text3)}
-.rank-badge{display:inline-block;padding:4px 14px;border-radius:16px;font-size:13px;font-weight:600;margin-top:6px;background:var(--card2);color:var(--text2)}
-
-.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.si{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:10px;text-align:center}
-.si .v{font-size:18px;font-weight:700}.si .l{font-size:10px;color:var(--text3);margin-top:1px}
-
-.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.act{background:var(--card2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:.15s}
-.act:active{transform:scale(.96)}
-.act .ic{font-size:26px}.act .t{font-size:11px;color:var(--text2);margin-top:3px}
-
-.pb{background:rgba(255,255,255,.07);border-radius:5px;height:7px;overflow:hidden;margin-top:4px}
-.pf{height:100%;border-radius:5px;transition:width .5s}
-
-.li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.03)}.li:last-child{border:none}
-.lr{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-.li-info{flex:1}.li-name{font-size:13px;font-weight:600}.li-sub{font-size:11px;color:var(--text3)}.li-sc{font-size:15px;font-weight:700}
-
-.shop-i{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:.15s}
-.shop-i:active{transform:scale(.98)}
-.shop-ic{font-size:28px}.shop-info{flex:1}.shop-n{font-size:13px;font-weight:600}.shop-d{font-size:11px;color:var(--text3)}
-.shop-p{background:var(--accent);color:#fff;border-radius:16px;padding:5px 12px;font-size:12px;font-weight:600;white-space:nowrap}
-
-.qi{background:var(--card2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:12px;margin-bottom:8px}
-.qi .d{font-size:13px;margin-bottom:4px}.qi .r{font-size:11px;color:var(--gold)}
-
-.btn{display:block;width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;transition:.15s}
-.btn-p{background:var(--accent);color:#fff}.btn-p:active{background:#6d28d9;transform:scale(.98)}
-.btn-g{background:var(--green);color:#fff}.btn-o{background:transparent;border:1px solid var(--accent);color:var(--accent2)}
-.sec-t{font-size:15px;font-weight:700;margin-bottom:10px}
-
-.daily-c{background:linear-gradient(135deg,#1e3a5f,#1e1b4b);border:1px solid rgba(59,130,246,.2);border-radius:var(--r);padding:16px;text-align:center;margin-bottom:12px}
-.daily-streak{font-size:26px;font-weight:800;color:var(--gold)}
-
-/* Upload area */
-.upload-area{border:2px dashed rgba(124,58,237,.4);border-radius:var(--r);padding:30px 16px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:12px;background:var(--card)}
-.upload-area:active{border-color:var(--accent2);background:var(--card2)}
-.upload-area .ic{font-size:40px;display:block;margin-bottom:8px}
-.upload-area .t1{font-size:14px;font-weight:600;margin-bottom:4px}
-.upload-area .t2{font-size:11px;color:var(--text3)}
-
-.result-card{background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid rgba(124,58,237,.25);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center}
-.result-psl{font-size:44px;font-weight:800}
-.metric-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.metric-row:last-child{border:none}
-.metric-name{font-size:12px;color:var(--text2)}.metric-val{font-size:14px;font-weight:700}
-
-.loading{display:none;text-align:center;padding:20px}
-.loading.show{display:block}
-.spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--accent2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 8px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-.toast{display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--accent);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;z-index:200;white-space:nowrap}
-.toast.show{display:block}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🏃 Subway Runner</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="header">
-  <h1>🔮 LooksMax Rate</h1>
-  <div class="sub">Оцени внешность по меркам луксмаксинга</div>
-  <div class="coins-bar">🪙 <span id="coinsC">0</span></div>
-</div>
-<div id="toast" class="toast"></div>
+    <canvas id="gameCanvas"></canvas>
 
-<!-- HOME -->
-<div class="page active" id="pg-home">
-  <div class="score-card">
-    <div style="font-size:12px;color:var(--text3)">Твой PSL</div>
-    <div><span class="psl-val" id="hPsl">—</span><span class="psl-max"> /8</span></div>
-    <div class="rank-badge" id="hRank">Нет оценки</div>
-  </div>
-  <div class="sg">
-    <div class="si"><div class="v" id="hElo">1000</div><div class="l">🏅 Elo</div></div>
-    <div class="si"><div class="v" id="hWins">0</div><div class="l">🏆 Побед</div></div>
-    <div class="si"><div class="v" id="hSym">—</div><div class="l">🧩 Симм.</div></div>
-    <div class="si"><div class="v" id="hJaw">—</div><div class="l">🦴 Челюсть</div></div>
-  </div>
-  <div class="acts">
-    <div class="act" onclick="switchPage('rate')"><div class="ic">📸</div><div class="t">Оценить лицо</div></div>
-    <div class="act" onclick="switchPage('arena')"><div class="ic">⚔️</div><div class="t">Батл</div></div>
-    <div class="act" onclick="switchPage('profile')"><div class="ic">👤</div><div class="t">Профиль</div></div>
-    <div class="act" onclick="switchPage('market')"><div class="ic">🛒</div><div class="t">Магазин</div></div>
-  </div>
-</div>
-
-<!-- RATE -->
-<div class="page" id="pg-rate">
-  <div class="sec-t">📸 Оценить внешность</div>
-  <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-    <span class="ic">📷</span>
-    <div class="t1">Нажми или перетащи фото</div>
-    <div class="t2">Анфас, чёткое освещение, без очков</div>
-  </div>
-  <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="onFileSelect(event)">
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <div style="font-size:13px;color:var(--text2)">Анализирую лицо...</div>
-  </div>
-  <div id="resultBox" style="display:none">
-    <div class="result-card">
-      <div style="font-size:12px;color:var(--text3)">Твой PSL</div>
-      <div class="result-psl" id="rPsl">—</div>
-      <div id="rCat" class="rank-badge" style="margin-top:4px">—</div>
+    <div id="hud" class="hidden">
+        <div id="hud-score">🏆 0</div>
+        <div id="hud-coins">🪙 0</div>
     </div>
-    <div class="card">
-      <div class="card-t">📊 Метрики</div>
-      <div id="rMetrics"></div>
-    </div>
-    <div class="card">
-      <div class="card-t">🛠 Советы</div>
-      <div id="rTips" style="font-size:12px;line-height:1.6"></div>
-    </div>
-    <div class="card">
-      <div class="card-t">🤣 Рофл</div>
-      <div id="rRoast" style="font-size:12px;font-style:italic"></div>
-    </div>
-  </div>
-</div>
 
-<!-- PROFILE -->
-<div class="page" id="pg-profile">
-  <div class="score-card">
-    <div style="font-size:12px;color:var(--text3)">Лучший PSL</div>
-    <div><span class="psl-val" id="pPsl">—</span><span class="psl-max"> /8</span></div>
-  </div>
-  <div class="sg">
-    <div class="si"><div class="v" id="pElo">1000</div><div class="l">🏅 Elo</div></div>
-    <div class="si"><div class="v" id="pRank">—</div><div class="l">📊 Рейтинг</div></div>
-    <div class="si"><div class="v" id="pWins">0</div><div class="l">🏆 Побед</div></div>
-    <div class="si"><div class="v" id="pLosses">0</div><div class="l">💀 Пораж.</div></div>
-  </div>
-  <div class="card" id="pMetricsCard" style="display:none">
-    <div class="card-t">📊 Детали метрик</div>
-    <div id="pMetrics"></div>
-  </div>
-  <div class="card">
-    <div class="card-t">📈 История</div>
-    <div id="pHistory"></div>
-  </div>
-</div>
-
-<!-- ARENA -->
-<div class="page" id="pg-arena">
-  <div class="sec-t">⚔️ Арена</div>
-  <button class="btn btn-p" style="margin-bottom:12px" onclick="doBattle()">🎲 Случайный батл</button>
-  <div class="card">
-    <div class="card-t">🏆 Топ по Elo</div>
-    <div id="topList"></div>
-  </div>
-</div>
-
-<!-- MARKET -->
-<div class="page" id="pg-market">
-  <div class="daily-c">
-    <div style="font-size:11px;color:var(--text3)">🔥 Серия</div>
-    <div class="daily-streak" id="mStreak">0 дн.</div>
-    <div style="margin-top:8px">
-      <button class="btn btn-g" id="dailyBtn" onclick="doDaily()">🎁 Забрать награду</button>
-    </div>
-  </div>
-  <div class="sec-t">🛒 Магазин</div>
-  <div class="shop-i" onclick="buyItem('elo100')">
-    <div class="shop-ic">🏅</div>
-    <div class="shop-info"><div class="shop-n">+100 Elo</div><div class="shop-d">Подними рейтинг</div></div>
-    <div class="shop-p">🪙 500</div>
-  </div>
-  <div class="shop-i" onclick="buyItem('elo200')">
-    <div class="shop-ic">💎</div>
-    <div class="shop-info"><div class="shop-n">+200 Elo</div><div class="shop-d">Выше в топе</div></div>
-    <div class="shop-p">🪙 900</div>
-  </div>
-  <div class="shop-i" onclick="buyItem('elo500')">
-    <div class="shop-ic">👑</div>
-    <div class="shop-info"><div class="shop-n">+500 Elo</div><div class="shop-d">Доминируй</div></div>
-    <div class="shop-p">🪙 2000</div>
-  </div>
-  <div class="sec-t" style="margin-top:12px">📋 Квесты</div>
-  <div id="questList"></div>
-</div>
-
-<!-- NAV -->
-<div class="nav">
-  <div class="nav-i active" onclick="switchPage('home')"><span class="ic">🏠</span><span class="lb">Главная</span></div>
-  <div class="nav-i" onclick="switchPage('rate')"><span class="ic">📸</span><span class="lb">Оценка</span></div>
-  <div class="nav-i" onclick="switchPage('profile')"><span class="ic">👤</span><span class="lb">Профиль</span></div>
-  <div class="nav-i" onclick="switchPage('arena')"><span class="ic">⚔️</span><span class="lb">Арена</span></div>
-  <div class="nav-i" onclick="switchPage('market')"><span class="ic">🛒</span><span class="lb">Маркет</span></div>
-</div>
-
-<script>
-const TG=window.Telegram&&Telegram.WebApp?Telegram.WebApp:{initDataUnsafe:{user:{id:0}},ready(){},showPopup(o){alert(o.message)},close(){}};
-const UID=TG.initDataUnsafe?.user?.id||new URLSearchParams(location.search).get('telegram_id')||'0';
-const API='/api';
-let profile=null;
-
-async function init(){if(TG.ready)TG.ready();await loadProfile();loadTop();loadQuests()}
-
-async function api(path,opts={}){
-  try{const sep=path.includes('?')?'&':'?';const r=await fetch(`${API}${path}${sep}telegram_id=${UID}`,opts);return await r.json()}
-  catch(e){console.error(e);return null}
-}
-
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
-
-// ─── Profile ────────────────────────────────────
-async function loadProfile(){
-  const d=await api('/profile');if(!d)return;profile=d;
-  document.getElementById('coinsC').textContent=d.coins||0;
-  const psl=d.best_psl||0;
-  // Home
-  document.getElementById('hPsl').textContent=psl>0?psl:'—';
-  document.getElementById('hElo').textContent=d.elo||0;
-  document.getElementById('hWins').textContent=d.wins||0;
-  if(d.last_score){
-    document.getElementById('hSym').textContent=d.last_score.symmetry+'%';
-    document.getElementById('hJaw').textContent=d.last_score.jaw+'%';
-    const cat=d.last_score.psl<3?'💀 Низкий':d.last_score.psl<4.5?'😐 Средний':d.last_score.psl<6?'😊 Хороший':d.last_score.psl<7.5?'🔥 Высокий':'👑 Элитный';
-    document.getElementById('hRank').textContent=cat;
-  }
-  // Profile page
-  document.getElementById('pPsl').textContent=psl>0?psl:'—';
-  document.getElementById('pElo').textContent=d.elo||0;
-  document.getElementById('pRank').textContent='#'+(d.elo_rank||'—');
-  document.getElementById('pWins').textContent=d.wins||0;
-  document.getElementById('pLosses').textContent=d.losses||0;
-
-  if(d.last_score){
-    document.getElementById('pMetricsCard').style.display='block';
-    const s=d.last_score;
-    const metrics=[
-      {n:'Симметрия',v:s.symmetry,c:'#7c3aed'},{n:'IPD',v:s.ipd_score,c:'#6366f1'},
-      {n:'Нос',v:s.nose_width_score,c:'#8b5cf6'},{n:'Рот',v:s.mouth_score,c:'#a855f7'},
-      {n:'Челюсть',v:s.jaw,c:'#c084fc'},{n:'Верт.сечение',v:s.gold_vert,c:'#d946ef'},
-      {n:'Наклон глаз',v:s.tilt_score,c:'#ec4899'}
-    ];
-    document.getElementById('pMetrics').innerHTML=metrics.map(m=>`
-      <div style="margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
-          <span>${m.n}</span><span>${Math.round(m.v)}%</span>
+    <div id="menu-screen" class="overlay">
+        <div class="panel">
+            <h1>🏃 Subway Runner</h1>
+            <p>Уворачивайся от препятствий!<br>Собирай монеты!</p>
+            <div class="controls-hint">
+                <div>⬅️➡️ Смена полосы</div>
+                <div>⬆️ Прыжок</div>
+                <div>⬇️ Подкат</div>
+            </div>
+            <button id="btn-play" class="btn-primary">▶ Играть</button>
+            <div id="menu-highscore" class="highscore"></div>
         </div>
-        <div class="pb"><div class="pf" style="width:${m.v}%;background:${m.c}"></div></div>
-      </div>
-    `).join('');
-  }
-  // History
-  if(d.progress&&d.progress.length){
-    document.getElementById('pHistory').innerHTML=d.progress.map((h,i)=>`
-      <div class="li"><div style="font-size:13px">${i+1}. PSL <b>${h.psl}</b> · симм ${h.symmetry}%</div></div>
-    `).join('');
-  }
-}
-
-// ─── Photo Analysis ─────────────────────────────
-function onFileSelect(e){
-  const file=e.target.files[0];if(!file)return;
-  analyzePhoto(file);
-}
-
-async function analyzePhoto(file){
-  document.getElementById('loading').classList.add('show');
-  document.getElementById('resultBox').style.display='none';
-  const fd=new FormData();fd.append('photo',file);fd.append('telegram_id',UID);
-  try{
-    const r=await fetch('/api/analyze',{method:'POST',body:fd});
-    const d=await r.json();
-    document.getElementById('loading').classList.remove('show');
-    if(d.error){toast('❌ '+d.error);return}
-    showResult(d);
-    await loadProfile();
-  }catch(e){
-    document.getElementById('loading').classList.remove('show');
-    toast('❌ Ошибка анализа');
-  }
-}
-
-function showResult(d){
-  document.getElementById('resultBox').style.display='block';
-  document.getElementById('rPsl').textContent=d.psl;
-  document.getElementById('rCat').textContent=d.category;
-  const metrics=[
-    {n:'🧩 Симметрия',v:d.symmetry+'%'},
-    {n:'👁 IPD',v:d.ipd_score+'%'},
-    {n:'👃 Нос',v:d.nose_width_score+'%'},
-    {n:'👄 Рот',v:d.mouth_score+'%'},
-    {n:'🦴 Челюсть',v:d.jaw+'%'},
-    {n:'📐 Верт.сечение',v:d.gold_vert+'%'},
-    {n:'👁‍🗨 Наклон глаз',v:d.canthal_tilt+'° ('+d.tilt_score+'%)'}
-  ];
-  document.getElementById('rMetrics').innerHTML=metrics.map(m=>`
-    <div class="metric-row"><span class="metric-name">${m.n}</span><span class="metric-val">${m.v}</span></div>
-  `).join('');
-  document.getElementById('rTips').innerHTML=d.tips.map(t=>'🔹 '+t).join('<br>');
-  document.getElementById('rRoast').textContent=d.roast;
-  toast('✅ +5 монет за оценку!');
-}
-
-// Drag & drop
-const ua=document.getElementById('uploadArea');
-ua.addEventListener('dragover',e=>{e.preventDefault();ua.style.borderColor='var(--accent2)'});
-ua.addEventListener('dragleave',()=>{ua.style.borderColor=''});
-ua.addEventListener('drop',e=>{e.preventDefault();ua.style.borderColor='';const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))analyzePhoto(f)});
-
-// ─── Top ────────────────────────────────────────
-async function loadTop(){
-  const d=await api('/top?limit=10');if(!d||!d.length)return;
-  const colors=['#f59e0b','#94a3b8','#cd7f32'];
-  document.getElementById('topList').innerHTML=d.map((u,i)=>`
-    <div class="li">
-      <div class="lr" style="background:${colors[i]||'var(--card2)'};color:${i<3?'#000':'var(--text)'}">${i+1}</div>
-      <div class="li-info"><div class="li-name">${u.nickname||'—'}</div><div class="li-sub">PSL ${u.best_psl||0} · ${u.wins}W/${u.losses}L</div></div>
-      <div class="li-sc">${u.elo}</div>
     </div>
-  `).join('');
-}
 
-// ─── Quests ──────────────────────────────────────
-async function loadQuests(){
-  const d=await api('/quests');
-  if(!d||!d.length){document.getElementById('questList').innerHTML='<div style="color:var(--text3);font-size:12px">Загрузка...</div>';return}
-  const html=d.map(q=>`<div class="qi"><div class="d">${q.desc}</div><div class="r">🪙 +${q.reward}</div></div>`).join('');
-  document.getElementById('questList').innerHTML=html;
-}
+    <div id="gameover-screen" class="overlay hidden">
+        <div class="panel">
+            <h2>💀 Game Over</h2>
+            <div id="go-score"></div>
+            <div id="go-coins"></div>
+            <div id="go-distance"></div>
+            <div id="go-record" class="new-record hidden">🎉 Новый рекорд!</div>
+            <button id="btn-retry" class="btn-primary">🔄 Ещё раз</button>
+            <button id="btn-menu" class="btn-secondary">🏠 Меню</button>
+        </div>
+    </div>
 
-// ─── Battle ──────────────────────────────────────
-async function doBattle(){
-  toast('⚔️ Ищу противника...');
-  const d=await api('/battle',{method:'POST'});
-  if(!d||d.error){toast('❌ '+(d?.error||'Ошибка'));return}
-  const win=d.winner_id==UID;
-  const res=win?'🏆 Победа!':d.winner_id?'💀 Поражение':'🤝 Ничья';
-  TG.showPopup({title:'⚔️ Батл!',message:`${res}\nТы: PSL ${d.challenger_psl} vs ${d.opponent_nick||'Соперник'}: PSL ${d.opponent_psl}\nElo: ${d.new_elo}`});
-  await loadProfile();loadTop();
-}
-
-// ─── Daily ────────────────────────────────────────
-async function doDaily(){
-  const d=await api('/daily',{method:'POST'});
-  if(!d)return;
-  if(d.success){toast(`🎁 +${d.reward} монет! 🔥 ${d.streak} дн.`);await loadProfile()}
-  else toast(d.message||'⏳ Подожди');
-}
-
-// ─── Shop ────────────────────────────────────────
-async function buyItem(item){
-  const d=await api(`/buy?item=${item}`,{method:'POST'});
-  if(!d)return;
-  toast(d.success?'✅ '+d.message:'❌ '+d.message);
-  if(d.success)await loadProfile();
-}
-
-// ─── Page Switch ─────────────────────────────────
-function switchPage(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('active'));
-  document.getElementById('pg-'+name).classList.add('active');
-  const idx={home:0,rate:1,profile:2,arena:3,market:4}[name];
-  if(idx!==undefined)document.querySelectorAll('.nav-i')[idx].classList.add('active');
-}
-
-init();
-</script>
+    <script src="app.js"></script>
 </body>
 </html>
