@@ -2,583 +2,388 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>LooksMax Rate</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-:root {
-  --bg: #0a0a12;
-  --card: #13131f;
-  --card2: #1a1a2e;
-  --accent: #7c3aed;
-  --accent2: #a855f7;
-  --accent3: #c084fc;
-  --green: #22c55e;
-  --red: #ef4444;
-  --gold: #f59e0b;
-  --text: #e2e8f0;
-  --text2: #94a3b8;
-  --text3: #64748b;
-  --radius: 16px;
-}
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  padding-bottom: 80px;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#08080f;--card:#111119;--card2:#1a1a28;--accent:#7c3aed;--accent2:#a855f7;--green:#22c55e;--red:#ef4444;--gold:#f59e0b;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--r:14px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:72px}
+.header{background:linear-gradient(135deg,var(--accent),#6d28d9);padding:16px 16px 20px;position:relative}
+.header h1{font-size:20px;font-weight:700}
+.header .sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px}
+.coins-bar{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border-radius:16px;padding:5px 12px;margin-top:8px;font-size:13px;font-weight:600}
 
-/* ─── Header ──────────────────────────────────────── */
-.header {
-  background: linear-gradient(135deg, var(--accent), #6d28d9);
-  padding: 20px 16px 24px;
-  position: relative;
-  overflow: hidden;
-}
-.header::after {
-  content:''; position:absolute; top:-50%; right:-20%; width:200px; height:200px;
-  background: radial-gradient(circle, rgba(168,85,247,.3) 0%, transparent 70%);
-  border-radius:50%;
-}
-.header h1 { font-size:22px; font-weight:700; }
-.header .subtitle { font-size:13px; color:rgba(255,255,255,.7); margin-top:2px; }
-.coins-bar {
-  display:inline-flex; align-items:center; gap:6px;
-  background:rgba(255,255,255,.15); border-radius:20px;
-  padding:6px 14px; margin-top:10px; font-size:14px; font-weight:600;
-}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid rgba(255,255,255,.05);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav-i{flex:1;text-align:center;padding:8px 0 6px;cursor:pointer;color:var(--text3);transition:.2s}
+.nav-i.active{color:var(--accent2)}
+.nav-i .ic{font-size:20px;display:block}
+.nav-i .lb{font-size:9px;margin-top:1px}
 
-/* ─── Navigation ──────────────────────────────────── */
-.nav {
-  position:fixed; bottom:0; left:0; right:0;
-  background: var(--card);
-  border-top:1px solid rgba(255,255,255,.05);
-  display:flex; z-index:100;
-  padding-bottom: env(safe-area-inset-bottom);
-}
-.nav-item {
-  flex:1; text-align:center; padding:10px 0 8px; cursor:pointer;
-  color:var(--text3); transition:.2s;
-}
-.nav-item.active { color:var(--accent2); }
-.nav-item .icon { font-size:22px; display:block; }
-.nav-item .label { font-size:10px; margin-top:2px; }
+.page{display:none;padding:16px}.page.active{display:block}
 
-/* ─── Pages ───────────────────────────────────────── */
-.page { display:none; padding:16px; }
-.page.active { display:block; }
+.card{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.card-t{font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
 
-/* ─── Cards ───────────────────────────────────────── */
-.card {
-  background: var(--card);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius: var(--radius);
-  padding:16px; margin-bottom:12px;
-}
-.card-title { font-size:13px; color:var(--text2); margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px; }
+.score-card{background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid rgba(124,58,237,.25);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:12px}
+.psl-val{font-size:52px;font-weight:800;line-height:1}.psl-max{font-size:18px;color:var(--text3)}
+.rank-badge{display:inline-block;padding:4px 14px;border-radius:16px;font-size:13px;font-weight:600;margin-top:6px;background:var(--card2);color:var(--text2)}
 
-/* ─── Score Card ──────────────────────────────────── */
-.score-card {
-  background: linear-gradient(135deg, #1e1b4b, #312e81);
-  border:1px solid rgba(124,58,237,.3);
-  border-radius:var(--radius); padding:20px; text-align:center;
-  margin-bottom:16px; position:relative; overflow:hidden;
-}
-.score-card::before {
-  content:''; position:absolute; top:-30px; right:-30px; width:120px; height:120px;
-  background:radial-gradient(circle,rgba(168,85,247,.2),transparent 70%); border-radius:50%;
-}
-.psl-value { font-size:56px; font-weight:800; line-height:1; }
-.psl-max { font-size:20px; color:var(--text3); }
-.rank-badge {
-  display:inline-block; padding:4px 16px; border-radius:20px;
-  font-size:14px; font-weight:600; margin-top:8px;
-}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.si{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:10px;text-align:center}
+.si .v{font-size:18px;font-weight:700}.si .l{font-size:10px;color:var(--text3);margin-top:1px}
 
-/* ─── Stats Grid ──────────────────────────────────── */
-.stats-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;
-}
-.stat-item {
-  background:var(--card); border:1px solid rgba(255,255,255,.06);
-  border-radius:12px; padding:12px; text-align:center;
-}
-.stat-value { font-size:20px; font-weight:700; }
-.stat-label { font-size:11px; color:var(--text3); margin-top:2px; }
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.act{background:var(--card2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:.15s}
+.act:active{transform:scale(.96)}
+.act .ic{font-size:26px}.act .t{font-size:11px;color:var(--text2);margin-top:3px}
 
-/* ─── Progress Bar ────────────────────────────────── */
-.progress-bar {
-  background:rgba(255,255,255,.08); border-radius:6px; height:8px; overflow:hidden; margin-top:6px;
-}
-.progress-fill {
-  height:100%; border-radius:6px; transition:width .6s ease;
-}
+.pb{background:rgba(255,255,255,.07);border-radius:5px;height:7px;overflow:hidden;margin-top:4px}
+.pf{height:100%;border-radius:5px;transition:width .5s}
 
-/* ─── Quick Actions ───────────────────────────────── */
-.actions {
-  display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;
-}
-.action-btn {
-  background:var(--card2); border:1px solid rgba(255,255,255,.06);
-  border-radius:12px; padding:14px; text-align:center; cursor:pointer;
-  transition:.2s;
-}
-.action-btn:active { transform:scale(.96); }
-.action-btn .icon { font-size:28px; }
-.action-btn .text { font-size:12px; color:var(--text2); margin-top:4px; }
+.li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.03)}.li:last-child{border:none}
+.lr{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.li-info{flex:1}.li-name{font-size:13px;font-weight:600}.li-sub{font-size:11px;color:var(--text3)}.li-sc{font-size:15px;font-weight:700}
 
-/* ─── List ────────────────────────────────────────── */
-.list-item {
-  display:flex; align-items:center; gap:12px;
-  padding:12px 0; border-bottom:1px solid rgba(255,255,255,.04);
-}
-.list-item:last-child { border-bottom:none; }
-.list-rank {
-  width:28px; height:28px; border-radius:50%; display:flex;
-  align-items:center; justify-content:center; font-size:12px; font-weight:700;
-  flex-shrink:0;
-}
-.list-info { flex:1; }
-.list-name { font-size:14px; font-weight:600; }
-.list-sub { font-size:12px; color:var(--text3); }
-.list-score { font-size:16px; font-weight:700; }
+.shop-i{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:.15s}
+.shop-i:active{transform:scale(.98)}
+.shop-ic{font-size:28px}.shop-info{flex:1}.shop-n{font-size:13px;font-weight:600}.shop-d{font-size:11px;color:var(--text3)}
+.shop-p{background:var(--accent);color:#fff;border-radius:16px;padding:5px 12px;font-size:12px;font-weight:600;white-space:nowrap}
 
-/* ─── Shop Item ───────────────────────────────────── */
-.shop-item {
-  display:flex; align-items:center; gap:12px;
-  background:var(--card2); border:1px solid rgba(255,255,255,.06);
-  border-radius:12px; padding:14px; margin-bottom:10px; cursor:pointer;
-  transition:.2s;
-}
-.shop-item:active { transform:scale(.98); }
-.shop-icon { font-size:32px; }
-.shop-info { flex:1; }
-.shop-name { font-size:14px; font-weight:600; }
-.shop-desc { font-size:12px; color:var(--text3); }
-.shop-price {
-  background:var(--accent); color:#fff; border-radius:20px;
-  padding:6px 14px; font-size:13px; font-weight:600; white-space:nowrap;
-}
+.qi{background:var(--card2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:12px;margin-bottom:8px}
+.qi .d{font-size:13px;margin-bottom:4px}.qi .r{font-size:11px;color:var(--gold)}
 
-/* ─── Quest Item ──────────────────────────────────── */
-.quest-item {
-  background:var(--card2); border:1px solid rgba(255,255,255,.06);
-  border-radius:12px; padding:14px; margin-bottom:10px;
-}
-.quest-desc { font-size:14px; margin-bottom:6px; }
-.quest-reward { font-size:12px; color:var(--gold); }
+.btn{display:block;width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;transition:.15s}
+.btn-p{background:var(--accent);color:#fff}.btn-p:active{background:#6d28d9;transform:scale(.98)}
+.btn-g{background:var(--green);color:#fff}.btn-o{background:transparent;border:1px solid var(--accent);color:var(--accent2)}
+.sec-t{font-size:15px;font-weight:700;margin-bottom:10px}
 
-/* ─── Battle Result ───────────────────────────────── */
-.battle-card {
-  background:var(--card2); border-radius:12px; padding:16px; margin-bottom:10px;
-}
-.battle-vs {
-  display:flex; align-items:center; justify-content:space-between;
-  gap:10px;
-}
-.battle-player { text-align:center; flex:1; }
-.battle-player .name { font-size:13px; font-weight:600; }
-.battle-player .psl { font-size:24px; font-weight:800; }
-.battle-vs-text { font-size:18px; font-weight:700; color:var(--accent2); }
-.battle-result { text-align:center; margin-top:8px; font-size:13px; }
+.daily-c{background:linear-gradient(135deg,#1e3a5f,#1e1b4b);border:1px solid rgba(59,130,246,.2);border-radius:var(--r);padding:16px;text-align:center;margin-bottom:12px}
+.daily-streak{font-size:26px;font-weight:800;color:var(--gold)}
 
-/* ─── Button ──────────────────────────────────────── */
-.btn {
-  display:block; width:100%; padding:14px; border:none; border-radius:12px;
-  font-size:15px; font-weight:600; cursor:pointer; text-align:center;
-  transition:.2s;
-}
-.btn-primary { background:var(--accent); color:#fff; }
-.btn-primary:active { background:#6d28d9; transform:scale(.98); }
-.btn-outline { background:transparent; border:1px solid var(--accent); color:var(--accent2); }
-.btn-green { background:var(--green); color:#fff; }
+/* Upload area */
+.upload-area{border:2px dashed rgba(124,58,237,.4);border-radius:var(--r);padding:30px 16px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:12px;background:var(--card)}
+.upload-area:active{border-color:var(--accent2);background:var(--card2)}
+.upload-area .ic{font-size:40px;display:block;margin-bottom:8px}
+.upload-area .t1{font-size:14px;font-weight:600;margin-bottom:4px}
+.upload-area .t2{font-size:11px;color:var(--text3)}
 
-/* ─── Section Title ───────────────────────────────── */
-.section-title { font-size:16px; font-weight:700; margin-bottom:12px; }
+.result-card{background:linear-gradient(135deg,#1e1b4b,#312e81);border:1px solid rgba(124,58,237,.25);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center}
+.result-psl{font-size:44px;font-weight:800}
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.metric-row:last-child{border:none}
+.metric-name{font-size:12px;color:var(--text2)}.metric-val{font-size:14px;font-weight:700}
 
-/* ─── Daily ───────────────────────────────────────── */
-.daily-card {
-  background:linear-gradient(135deg,#1e3a5f,#1e1b4b);
-  border:1px solid rgba(59,130,246,.3);
-  border-radius:var(--radius); padding:20px; text-align:center;
-  margin-bottom:16px;
-}
-.daily-streak { font-size:28px; font-weight:800; color:var(--gold); }
+.loading{display:none;text-align:center;padding:20px}
+.loading.show{display:block}
+.spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--accent2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.toast{display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--accent);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;z-index:200;white-space:nowrap}
+.toast.show{display:block}
 </style>
 </head>
 <body>
-
 <div class="header">
   <h1>🔮 LooksMax Rate</h1>
-  <div class="subtitle">Оцени внешность по меркам луксмаксинга</div>
-  <div class="coins-bar" id="coinsBar">🪙 <span id="coinsCount">0</span></div>
+  <div class="sub">Оцени внешность по меркам луксмаксинга</div>
+  <div class="coins-bar">🪙 <span id="coinsC">0</span></div>
 </div>
+<div id="toast" class="toast"></div>
 
-<!-- ═══ HOME PAGE ═══════════════════════════════════ -->
-<div class="page active" id="page-home">
-  <div class="score-card" id="scoreCard">
-    <div style="font-size:13px;color:var(--text3);margin-bottom:4px">Твой PSL</div>
-    <div><span class="psl-value" id="pslValue">—</span><span class="psl-max"> /8</span></div>
-    <div class="rank-badge" id="rankBadge" style="background:var(--card2);color:var(--text3)">Нет оценки</div>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-item">
-      <div class="stat-value" id="statElo">1000</div>
-      <div class="stat-label">🏅 Elo</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="statWins">0</div>
-      <div class="stat-label">🏆 Побед</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="statSym">—</div>
-      <div class="stat-label">🧩 Симметрия</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="statJaw">—</div>
-      <div class="stat-label">🦴 Челюсть</div>
-    </div>
-  </div>
-
-  <div class="actions">
-    <div class="action-btn" onclick="TG.sendData('rate')">
-      <div class="icon">📸</div>
-      <div class="text">Оценить лицо</div>
-    </div>
-    <div class="action-btn" onclick="switchPage('arena')">
-      <div class="icon">⚔️</div>
-      <div class="text">Батл</div>
-    </div>
-    <div class="action-btn" onclick="switchPage('profile')">
-      <div class="icon">👤</div>
-      <div class="text">Профиль</div>
-    </div>
-    <div class="action-btn" onclick="switchPage('market')">
-      <div class="icon">🛒</div>
-      <div class="text">Магазин</div>
-    </div>
-  </div>
-
-  <div class="card" id="questPreview">
-    <div class="card-title">📋 Активные квесты</div>
-    <div id="homeQuests"></div>
-  </div>
-</div>
-
-<!-- ═══ PROFILE PAGE ═══════════════════════════════ -->
-<div class="page" id="page-profile">
+<!-- HOME -->
+<div class="page active" id="pg-home">
   <div class="score-card">
-    <div style="font-size:13px;color:var(--text3);margin-bottom:4px">Лучший PSL</div>
-    <div><span class="psl-value" id="profBestPsl">—</span><span class="psl-max"> /8</span></div>
-    <div class="rank-badge" id="profRank" style="background:var(--card2);color:var(--text3)">Нет оценки</div>
+    <div style="font-size:12px;color:var(--text3)">Твой PSL</div>
+    <div><span class="psl-val" id="hPsl">—</span><span class="psl-max"> /8</span></div>
+    <div class="rank-badge" id="hRank">Нет оценки</div>
   </div>
-
-  <div class="stats-grid">
-    <div class="stat-item">
-      <div class="stat-value" id="profElo">1000</div>
-      <div class="stat-label">🏅 Elo</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="profRankPos">—</div>
-      <div class="stat-label">📊 Рейтинг</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="profWins">0</div>
-      <div class="stat-label">🏆 Побед</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="profLosses">0</div>
-      <div class="stat-label">💀 Поражений</div>
-    </div>
+  <div class="sg">
+    <div class="si"><div class="v" id="hElo">1000</div><div class="l">🏅 Elo</div></div>
+    <div class="si"><div class="v" id="hWins">0</div><div class="l">🏆 Побед</div></div>
+    <div class="si"><div class="v" id="hSym">—</div><div class="l">🧩 Симм.</div></div>
+    <div class="si"><div class="v" id="hJaw">—</div><div class="l">🦴 Челюсть</div></div>
   </div>
-
-  <div class="card">
-    <div class="card-title">📊 Детали метрик</div>
-    <div id="metricBars"></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">📈 История</div>
-    <div id="historyList"></div>
+  <div class="acts">
+    <div class="act" onclick="switchPage('rate')"><div class="ic">📸</div><div class="t">Оценить лицо</div></div>
+    <div class="act" onclick="switchPage('arena')"><div class="ic">⚔️</div><div class="t">Батл</div></div>
+    <div class="act" onclick="switchPage('profile')"><div class="ic">👤</div><div class="t">Профиль</div></div>
+    <div class="act" onclick="switchPage('market')"><div class="ic">🛒</div><div class="t">Магазин</div></div>
   </div>
 </div>
 
-<!-- ═══ ARENA PAGE ═════════════════════════════════ -->
-<div class="page" id="page-arena">
-  <div class="section-title">⚔️ Арена</div>
+<!-- RATE -->
+<div class="page" id="pg-rate">
+  <div class="sec-t">📸 Оценить внешность</div>
+  <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+    <span class="ic">📷</span>
+    <div class="t1">Нажми или перетащи фото</div>
+    <div class="t2">Анфас, чёткое освещение, без очков</div>
+  </div>
+  <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="onFileSelect(event)">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div style="font-size:13px;color:var(--text2)">Анализирую лицо...</div>
+  </div>
+  <div id="resultBox" style="display:none">
+    <div class="result-card">
+      <div style="font-size:12px;color:var(--text3)">Твой PSL</div>
+      <div class="result-psl" id="rPsl">—</div>
+      <div id="rCat" class="rank-badge" style="margin-top:4px">—</div>
+    </div>
+    <div class="card">
+      <div class="card-t">📊 Метрики</div>
+      <div id="rMetrics"></div>
+    </div>
+    <div class="card">
+      <div class="card-t">🛠 Советы</div>
+      <div id="rTips" style="font-size:12px;line-height:1.6"></div>
+    </div>
+    <div class="card">
+      <div class="card-t">🤣 Рофл</div>
+      <div id="rRoast" style="font-size:12px;font-style:italic"></div>
+    </div>
+  </div>
+</div>
 
-  <button class="btn btn-primary" style="margin-bottom:16px" onclick="startBattle()">
-    🎲 Найти случайного противника
-  </button>
-
+<!-- PROFILE -->
+<div class="page" id="pg-profile">
+  <div class="score-card">
+    <div style="font-size:12px;color:var(--text3)">Лучший PSL</div>
+    <div><span class="psl-val" id="pPsl">—</span><span class="psl-max"> /8</span></div>
+  </div>
+  <div class="sg">
+    <div class="si"><div class="v" id="pElo">1000</div><div class="l">🏅 Elo</div></div>
+    <div class="si"><div class="v" id="pRank">—</div><div class="l">📊 Рейтинг</div></div>
+    <div class="si"><div class="v" id="pWins">0</div><div class="l">🏆 Побед</div></div>
+    <div class="si"><div class="v" id="pLosses">0</div><div class="l">💀 Пораж.</div></div>
+  </div>
+  <div class="card" id="pMetricsCard" style="display:none">
+    <div class="card-t">📊 Детали метрик</div>
+    <div id="pMetrics"></div>
+  </div>
   <div class="card">
-    <div class="card-title">🏆 Топ по Elo</div>
+    <div class="card-t">📈 История</div>
+    <div id="pHistory"></div>
+  </div>
+</div>
+
+<!-- ARENA -->
+<div class="page" id="pg-arena">
+  <div class="sec-t">⚔️ Арена</div>
+  <button class="btn btn-p" style="margin-bottom:12px" onclick="doBattle()">🎲 Случайный батл</button>
+  <div class="card">
+    <div class="card-t">🏆 Топ по Elo</div>
     <div id="topList"></div>
   </div>
-
-  <div class="card">
-    <div class="card-title">⚔️ Последние батлы</div>
-    <div id="battleHistory"></div>
-  </div>
 </div>
 
-<!-- ═══ MARKET PAGE ════════════════════════════════ -->
-<div class="page" id="page-market">
-  <div class="daily-card">
-    <div style="font-size:13px;color:var(--text3)">🔥 Серия</div>
-    <div class="daily-streak" id="dailyStreak">0 дн.</div>
+<!-- MARKET -->
+<div class="page" id="pg-market">
+  <div class="daily-c">
+    <div style="font-size:11px;color:var(--text3)">🔥 Серия</div>
+    <div class="daily-streak" id="mStreak">0 дн.</div>
     <div style="margin-top:8px">
-      <button class="btn btn-green" id="dailyBtn" onclick="claimDaily()">🎁 Забрать награду</button>
+      <button class="btn btn-g" id="dailyBtn" onclick="doDaily()">🎁 Забрать награду</button>
     </div>
   </div>
-
-  <div class="section-title">🛒 Магазин</div>
-
-  <div class="shop-item" onclick="buyItem('elo100')">
-    <div class="shop-icon">🏅</div>
-    <div class="shop-info">
-      <div class="shop-name">+100 Elo</div>
-      <div class="shop-desc">Подними свой рейтинг</div>
-    </div>
-    <div class="shop-price">🪙 500</div>
+  <div class="sec-t">🛒 Магазин</div>
+  <div class="shop-i" onclick="buyItem('elo100')">
+    <div class="shop-ic">🏅</div>
+    <div class="shop-info"><div class="shop-n">+100 Elo</div><div class="shop-d">Подними рейтинг</div></div>
+    <div class="shop-p">🪙 500</div>
   </div>
-  <div class="shop-item" onclick="buyItem('elo200')">
-    <div class="shop-icon">💎</div>
-    <div class="shop-info">
-      <div class="shop-name">+200 Elo</div>
-      <div class="shop-desc">Ещё выше в топе</div>
-    </div>
-    <div class="shop-price">🪙 900</div>
+  <div class="shop-i" onclick="buyItem('elo200')">
+    <div class="shop-ic">💎</div>
+    <div class="shop-info"><div class="shop-n">+200 Elo</div><div class="shop-d">Выше в топе</div></div>
+    <div class="shop-p">🪙 900</div>
   </div>
-  <div class="shop-item" onclick="buyItem('elo500')">
-    <div class="shop-icon">👑</div>
-    <div class="shop-info">
-      <div class="shop-name">+500 Elo</div>
-      <div class="shop-desc">Доминируй в арене</div>
-    </div>
-    <div class="shop-price">🪙 2000</div>
+  <div class="shop-i" onclick="buyItem('elo500')">
+    <div class="shop-ic">👑</div>
+    <div class="shop-info"><div class="shop-n">+500 Elo</div><div class="shop-d">Доминируй</div></div>
+    <div class="shop-p">🪙 2000</div>
   </div>
-
-  <div class="section-title" style="margin-top:16px">📋 Квесты</div>
+  <div class="sec-t" style="margin-top:12px">📋 Квесты</div>
   <div id="questList"></div>
 </div>
 
-<!-- ═══ NAV ════════════════════════════════════════ -->
+<!-- NAV -->
 <div class="nav">
-  <div class="nav-item active" onclick="switchPage('home')">
-    <span class="icon">🏠</span><span class="label">Главная</span>
-  </div>
-  <div class="nav-item" onclick="switchPage('profile')">
-    <span class="icon">👤</span><span class="label">Профиль</span>
-  </div>
-  <div class="nav-item" onclick="switchPage('arena')">
-    <span class="icon">⚔️</span><span class="label">Арена</span>
-  </div>
-  <div class="nav-item" onclick="switchPage('market')">
-    <span class="icon">🛒</span><span class="label">Маркет</span>
-  </div>
+  <div class="nav-i active" onclick="switchPage('home')"><span class="ic">🏠</span><span class="lb">Главная</span></div>
+  <div class="nav-i" onclick="switchPage('rate')"><span class="ic">📸</span><span class="lb">Оценка</span></div>
+  <div class="nav-i" onclick="switchPage('profile')"><span class="ic">👤</span><span class="lb">Профиль</span></div>
+  <div class="nav-i" onclick="switchPage('arena')"><span class="ic">⚔️</span><span class="lb">Арена</span></div>
+  <div class="nav-i" onclick="switchPage('market')"><span class="ic">🛒</span><span class="lb">Маркет</span></div>
 </div>
 
 <script>
-const TG = window.Telegram && Telegram.WebApp ? Telegram.WebApp : {
-  initDataUnsafe: {user: {id: 0}},
-  sendData: (d) => alert('Отправь фото в бота для оценки!'),
-  close: () => {},
-  showPopup: (o) => alert(o.message),
-  MainButton: {show:()=>{}, hide:()=>{}, onClick:()=>{}}
-};
+const TG=window.Telegram&&Telegram.WebApp?Telegram.WebApp:{initDataUnsafe:{user:{id:0}},ready(){},showPopup(o){alert(o.message)},close(){}};
+const UID=TG.initDataUnsafe?.user?.id||new URLSearchParams(location.search).get('telegram_id')||'0';
+const API='/api';
+let profile=null;
 
-const UID = TG.initDataUnsafe?.user?.id || new URLSearchParams(location.search).get('telegram_id') || '0';
-const API = '/api';
+async function init(){if(TG.ready)TG.ready();await loadProfile();loadTop();loadQuests()}
 
-let profile = null;
-
-// ─── Init ──────────────────────────────────────────
-async function init() {
-  if (TG.ready) TG.ready();
-  if (TG.MainButton) { TG.MainButton.hide(); }
-  await loadProfile();
-  loadTop();
-  loadQuests();
+async function api(path,opts={}){
+  try{const sep=path.includes('?')?'&':'?';const r=await fetch(`${API}${path}${sep}telegram_id=${UID}`,opts);return await r.json()}
+  catch(e){console.error(e);return null}
 }
 
-// ─── API ───────────────────────────────────────────
-async function api(path, opts = {}) {
-  try {
-    const r = await fetch(`${API}${path}&telegram_id=${UID}`, opts);
-    return await r.json();
-  } catch(e) { console.error(e); return null; }
-}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
 
-// ─── Profile ───────────────────────────────────────
-async function loadProfile() {
-  const data = await api('/profile?');
-  if (!data) return;
-  profile = data;
-
+// ─── Profile ────────────────────────────────────
+async function loadProfile(){
+  const d=await api('/profile');if(!d)return;profile=d;
+  document.getElementById('coinsC').textContent=d.coins||0;
+  const psl=d.best_psl||0;
   // Home
-  const psl = data.best_psl || 0;
-  document.getElementById('pslValue').textContent = psl > 0 ? psl : '—';
-  document.getElementById('statElo').textContent = data.elo || 0;
-  document.getElementById('statWins').textContent = data.wins || 0;
-  document.getElementById('coinsCount').textContent = data.coins || 0;
-
-  if (data.last_score) {
-    document.getElementById('statSym').textContent = data.last_score.symmetry + '%';
-    document.getElementById('statJaw').textContent = data.last_score.jaw + '%';
+  document.getElementById('hPsl').textContent=psl>0?psl:'—';
+  document.getElementById('hElo').textContent=d.elo||0;
+  document.getElementById('hWins').textContent=d.wins||0;
+  if(d.last_score){
+    document.getElementById('hSym').textContent=d.last_score.symmetry+'%';
+    document.getElementById('hJaw').textContent=d.last_score.jaw+'%';
+    const cat=d.last_score.psl<3?'💀 Низкий':d.last_score.psl<4.5?'😐 Средний':d.last_score.psl<6?'😊 Хороший':d.last_score.psl<7.5?'🔥 Высокий':'👑 Элитный';
+    document.getElementById('hRank').textContent=cat;
   }
-
-  // Rank badge
-  if (psl > 0) {
-    const badge = document.getElementById('rankBadge');
-    badge.textContent = data.rank_name || '—';
-    badge.style.background = data.rank_color || 'var(--card2)';
-    badge.style.color = '#fff';
-  }
-
   // Profile page
-  document.getElementById('profBestPsl').textContent = psl > 0 ? psl : '—';
-  document.getElementById('profElo').textContent = data.elo || 0;
-  document.getElementById('profWins').textContent = data.wins || 0;
-  document.getElementById('profLosses').textContent = data.losses || 0;
-  document.getElementById('profRankPos').textContent = '#' + (data.elo_rank || '—');
-  document.getElementById('dailyStreak').textContent = (data.daily_streak || 0) + ' дн.';
+  document.getElementById('pPsl').textContent=psl>0?psl:'—';
+  document.getElementById('pElo').textContent=d.elo||0;
+  document.getElementById('pRank').textContent='#'+(d.elo_rank||'—');
+  document.getElementById('pWins').textContent=d.wins||0;
+  document.getElementById('pLosses').textContent=d.losses||0;
 
-  if (psl > 0) {
-    const pb = document.getElementById('profRank');
-    pb.textContent = data.rank_name;
-    pb.style.background = data.rank_color;
-    pb.style.color = '#fff';
-  }
-
-  // Metrics bars
-  if (data.last_score) {
-    const s = data.last_score;
-    const metrics = [
-      {name:'Симметрия', val:s.symmetry, color:'#7c3aed'},
-      {name:'IPD', val:s.ipd_score||0, color:'#6366f1'},
-      {name:'Нос', val:s.nose_width_score||0, color:'#8b5cf6'},
-      {name:'Рот', val:s.mouth_score||0, color:'#a855f7'},
-      {name:'Челюсть', val:s.jaw, color:'#c084fc'},
-      {name:'Верт. сечение', val:s.gold_vert||0, color:'#d946ef'},
+  if(d.last_score){
+    document.getElementById('pMetricsCard').style.display='block';
+    const s=d.last_score;
+    const metrics=[
+      {n:'Симметрия',v:s.symmetry,c:'#7c3aed'},{n:'IPD',v:s.ipd_score,c:'#6366f1'},
+      {n:'Нос',v:s.nose_width_score,c:'#8b5cf6'},{n:'Рот',v:s.mouth_score,c:'#a855f7'},
+      {n:'Челюсть',v:s.jaw,c:'#c084fc'},{n:'Верт.сечение',v:s.gold_vert,c:'#d946ef'},
+      {n:'Наклон глаз',v:s.tilt_score,c:'#ec4899'}
     ];
-    document.getElementById('metricBars').innerHTML = metrics.map(m => `
-      <div style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
-          <span>${m.name}</span><span>${Math.round(m.val)}%</span>
+    document.getElementById('pMetrics').innerHTML=metrics.map(m=>`
+      <div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+          <span>${m.n}</span><span>${Math.round(m.v)}%</span>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width:${m.val}%;background:${m.color}"></div>
-        </div>
+        <div class="pb"><div class="pf" style="width:${m.v}%;background:${m.c}"></div></div>
       </div>
     `).join('');
   }
-
   // History
-  if (data.progress && data.progress.length) {
-    document.getElementById('historyList').innerHTML = data.progress.map((h,i) => `
-      <div class="list-item">
-        <div style="font-size:14px">${i+1}. PSL <b>${h.psl}</b> · симм ${h.symmetry}%</div>
-      </div>
-    `).join('');
-  }
-
-  // Battle history
-  if (data.battles && data.battles.length) {
-    document.getElementById('battleHistory').innerHTML = data.battles.map(b => `
-      <div class="battle-card">
-        <div class="battle-vs">
-          <div class="battle-player"><div class="psl">${b.challenger_psl}</div></div>
-          <div class="battle-vs-text">VS</div>
-          <div class="battle-player"><div class="psl">${b.opponent_psl}</div></div>
-        </div>
-        <div class="battle-result">${b.winner_id == UID ? '🏆 Победа' : b.winner_id ? '💀 Поражение' : '🤝 Ничья'}</div>
-      </div>
+  if(d.progress&&d.progress.length){
+    document.getElementById('pHistory').innerHTML=d.progress.map((h,i)=>`
+      <div class="li"><div style="font-size:13px">${i+1}. PSL <b>${h.psl}</b> · симм ${h.symmetry}%</div></div>
     `).join('');
   }
 }
 
-// ─── Top ───────────────────────────────────────────
-async function loadTop() {
-  const data = await api('/top?limit=10&');
-  if (!data || !data.length) return;
-  const colors = ['#f59e0b','#94a3b8','#cd7f32'];
-  document.getElementById('topList').innerHTML = data.map((u,i) => `
-    <div class="list-item">
-      <div class="list-rank" style="background:${colors[i]||'var(--card2)'};color:${i<3?'#000':'var(--text)'}">${i+1}</div>
-      <div class="list-info">
-        <div class="list-name">${u.nickname||'—'}</div>
-        <div class="list-sub">PSL ${u.best_psl||0} · ${u.wins}W/${u.losses}L</div>
-      </div>
-      <div class="list-score">${u.elo}</div>
-    </div>
-  `).join('');
+// ─── Photo Analysis ─────────────────────────────
+function onFileSelect(e){
+  const file=e.target.files[0];if(!file)return;
+  analyzePhoto(file);
 }
 
-// ─── Quests ────────────────────────────────────────
-async function loadQuests() {
-  const data = await api('/quests?');
-  if (!data || !data.length) {
-    document.getElementById('questList').innerHTML = '<div style="color:var(--text3);font-size:13px">Квесты обновляются...</div>';
-    return;
-  }
-  const html = data.map(q => `
-    <div class="quest-item">
-      <div class="quest-desc">${q.desc}</div>
-      <div class="quest-reward">🪙 +${q.reward}</div>
-    </div>
-  `).join('');
-  document.getElementById('questList').innerHTML = html;
-  document.getElementById('homeQuests').innerHTML = html;
-}
-
-// ─── Battle ────────────────────────────────────────
-async function startBattle() {
-  const data = await api('/random_battle?', {method:'POST'});
-  if (!data) return;
-  if (data.error) { TG.showPopup({message: data.error}); return; }
-
-  const result = data.winner_id == UID ? '🏆 Победа!' : data.winner_id ? '💀 Поражение' : '🤝 Ничья';
-  TG.showPopup({
-    title: '⚔️ Батл завершён!',
-    message: `${result}\nТвой PSL: ${data.challenger_psl} vs ${data.opponent_psl}\nElo: ${data.new_elo}`,
-  });
-  await loadProfile();
-  loadTop();
-}
-
-// ─── Daily ─────────────────────────────────────────
-async function claimDaily() {
-  const data = await api('/daily?', {method:'POST'});
-  if (!data) return;
-  if (data.success) {
-    TG.showPopup({title:'🎁 Награда!', message:`+${data.reward} монет!\n🔥 Серия: ${data.streak} дн.`});
+async function analyzePhoto(file){
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('resultBox').style.display='none';
+  const fd=new FormData();fd.append('photo',file);fd.append('telegram_id',UID);
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',body:fd});
+    const d=await r.json();
+    document.getElementById('loading').classList.remove('show');
+    if(d.error){toast('❌ '+d.error);return}
+    showResult(d);
     await loadProfile();
-  } else {
-    TG.showPopup({title:'⏳', message: data.message});
+  }catch(e){
+    document.getElementById('loading').classList.remove('show');
+    toast('❌ Ошибка анализа');
   }
 }
 
-// ─── Shop ──────────────────────────────────────────
-async function buyItem(item) {
-  const data = await api(`/buy?item=${item}&`, {method:'POST'});
-  if (!data) return;
-  TG.showPopup({title: data.success ? '✅' : '❌', message: data.message});
-  if (data.success) await loadProfile();
+function showResult(d){
+  document.getElementById('resultBox').style.display='block';
+  document.getElementById('rPsl').textContent=d.psl;
+  document.getElementById('rCat').textContent=d.category;
+  const metrics=[
+    {n:'🧩 Симметрия',v:d.symmetry+'%'},
+    {n:'👁 IPD',v:d.ipd_score+'%'},
+    {n:'👃 Нос',v:d.nose_width_score+'%'},
+    {n:'👄 Рот',v:d.mouth_score+'%'},
+    {n:'🦴 Челюсть',v:d.jaw+'%'},
+    {n:'📐 Верт.сечение',v:d.gold_vert+'%'},
+    {n:'👁‍🗨 Наклон глаз',v:d.canthal_tilt+'° ('+d.tilt_score+'%)'}
+  ];
+  document.getElementById('rMetrics').innerHTML=metrics.map(m=>`
+    <div class="metric-row"><span class="metric-name">${m.n}</span><span class="metric-val">${m.v}</span></div>
+  `).join('');
+  document.getElementById('rTips').innerHTML=d.tips.map(t=>'🔹 '+t).join('<br>');
+  document.getElementById('rRoast').textContent=d.roast;
+  toast('✅ +5 монет за оценку!');
 }
 
-// ─── Page Switching ────────────────────────────────
-function switchPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  const navItems = document.querySelectorAll('.nav-item');
-  const idx = {home:0, profile:1, arena:2, market:3}[name];
-  if (idx !== undefined) navItems[idx].classList.add('active');
+// Drag & drop
+const ua=document.getElementById('uploadArea');
+ua.addEventListener('dragover',e=>{e.preventDefault();ua.style.borderColor='var(--accent2)'});
+ua.addEventListener('dragleave',()=>{ua.style.borderColor=''});
+ua.addEventListener('drop',e=>{e.preventDefault();ua.style.borderColor='';const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))analyzePhoto(f)});
+
+// ─── Top ────────────────────────────────────────
+async function loadTop(){
+  const d=await api('/top?limit=10');if(!d||!d.length)return;
+  const colors=['#f59e0b','#94a3b8','#cd7f32'];
+  document.getElementById('topList').innerHTML=d.map((u,i)=>`
+    <div class="li">
+      <div class="lr" style="background:${colors[i]||'var(--card2)'};color:${i<3?'#000':'var(--text)'}">${i+1}</div>
+      <div class="li-info"><div class="li-name">${u.nickname||'—'}</div><div class="li-sub">PSL ${u.best_psl||0} · ${u.wins}W/${u.losses}L</div></div>
+      <div class="li-sc">${u.elo}</div>
+    </div>
+  `).join('');
+}
+
+// ─── Quests ──────────────────────────────────────
+async function loadQuests(){
+  const d=await api('/quests');
+  if(!d||!d.length){document.getElementById('questList').innerHTML='<div style="color:var(--text3);font-size:12px">Загрузка...</div>';return}
+  const html=d.map(q=>`<div class="qi"><div class="d">${q.desc}</div><div class="r">🪙 +${q.reward}</div></div>`).join('');
+  document.getElementById('questList').innerHTML=html;
+}
+
+// ─── Battle ──────────────────────────────────────
+async function doBattle(){
+  toast('⚔️ Ищу противника...');
+  const d=await api('/battle',{method:'POST'});
+  if(!d||d.error){toast('❌ '+(d?.error||'Ошибка'));return}
+  const win=d.winner_id==UID;
+  const res=win?'🏆 Победа!':d.winner_id?'💀 Поражение':'🤝 Ничья';
+  TG.showPopup({title:'⚔️ Батл!',message:`${res}\nТы: PSL ${d.challenger_psl} vs ${d.opponent_nick||'Соперник'}: PSL ${d.opponent_psl}\nElo: ${d.new_elo}`});
+  await loadProfile();loadTop();
+}
+
+// ─── Daily ────────────────────────────────────────
+async function doDaily(){
+  const d=await api('/daily',{method:'POST'});
+  if(!d)return;
+  if(d.success){toast(`🎁 +${d.reward} монет! 🔥 ${d.streak} дн.`);await loadProfile()}
+  else toast(d.message||'⏳ Подожди');
+}
+
+// ─── Shop ────────────────────────────────────────
+async function buyItem(item){
+  const d=await api(`/buy?item=${item}`,{method:'POST'});
+  if(!d)return;
+  toast(d.success?'✅ '+d.message:'❌ '+d.message);
+  if(d.success)await loadProfile();
+}
+
+// ─── Page Switch ─────────────────────────────────
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('active'));
+  document.getElementById('pg-'+name).classList.add('active');
+  const idx={home:0,rate:1,profile:2,arena:3,market:4}[name];
+  if(idx!==undefined)document.querySelectorAll('.nav-i')[idx].classList.add('active');
 }
 
 init();
